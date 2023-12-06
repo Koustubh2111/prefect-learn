@@ -1,15 +1,17 @@
 from prefect import task, flow
 from torchvision import datasets, transforms
+import matplotlib.pyplot as plt
 
 #Define downloading the data as a task
 @task
 def download_data():
-    train_set = torchvision.datasets.FashionMNIST("./data", download=True, transform= \
+    train_set = datasets.FashionMNIST("./data", download=True, transform= \
                                                 transforms.Compose([transforms.ToTensor()]))
-    test_set = torchvision.datasets.FashionMNIST("./data", download=True, train=False, transform= \
+    test_set = datasets.FashionMNIST("./data", download=True, train=False, transform= \
                                                transforms.Compose([transforms.ToTensor()]))  
     return train_set, test_set
 
+#Loading data task
 @task
 def load_data(train_set, test_set):
     train_loader = torch.utils.data.DataLoader(train_set, 
@@ -18,6 +20,7 @@ def load_data(train_set, test_set):
                                           batch_size=100)
     return train_loader, test_loader
 
+#test visualization task
 @task
 def vis_test(train_set):
     image, label = next(iter(train_set))
@@ -25,3 +28,11 @@ def vis_test(train_set):
     print(label)
 
 
+#Create a work flow
+@flow
+def first_flow():
+    #Tasks
+    print('Flow')
+    train_set, test_set = download_data()
+    train_loader, test_laoder = load_data(train_set, test_set)
+    vis_test(train_set)
