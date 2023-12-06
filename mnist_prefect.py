@@ -1,6 +1,7 @@
 from prefect import task, flow
 from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
+import torch
 
 #Define downloading the data as a task
 @task
@@ -36,3 +37,6 @@ def first_flow():
     train_set, test_set = download_data()
     train_loader, test_laoder = load_data(train_set, test_set)
     vis_test(train_set)
+
+if __name__ == "__main__":
+   first_flow()
