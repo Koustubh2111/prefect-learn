@@ -16,17 +16,22 @@ from itertools import chain
 
 
 #%%
-
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # Define a transform to normalize the data
 transform = transforms.Compose([transforms.ToTensor(),
                                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
                                ])
 
+train_csv = pd.read_csv("fashion-mnist_train.csv")
+test_csv = pd.read_csv("fashion-mnist_test.csv")
+
+
+
 # Download and load the training data
-trainset = datasets.FashionMNIST('MNIST_data/', download = True, train = True, transform = transform)
-testset = datasets.FashionMNIST('MNIST_data/', download = True, train = False, transform = transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size = 64, shuffle = True)
-testloader = torch.utils.data.DataLoader(testset, batch_size = 64, shuffle = True)
+#trainset = datasets.FashionMNIST('MNIST_data/', download = True, train = True, transform = transform)
+#testset = datasets.FashionMNIST('MNIST_data/', download = True, train = False, transform = transform)
+#train_loader = torch.utils.data.DataLoader(trainset, batch_size = 64, shuffle = True)
+#test_loader = torch.utils.data.DataLoader(testset, batch_size = 64, shuffle = True)
 
 #%%
 class FashionDataset(Dataset):
@@ -60,13 +65,6 @@ class FashionDataset(Dataset):
     def __len__(self):
         return len(self.images)
 
-#%%# Transform data into Tensor that has a range from 0 to 1
-train_set = FashionDataset(train_csv, transform=transforms.Compose([transforms.ToTensor()]))
-test_set = FashionDataset(test_csv, transform=transforms.Compose([transforms.ToTensor()]))
-
-train_loader = DataLoader(train_set, batch_size=100)
-test_loader = DataLoader(train_set, batch_size=100)
-
 #%%
 def output_label(label):
     output_mapping = {
@@ -84,6 +82,13 @@ def output_label(label):
     input = (label.item() if type(label) == torch.Tensor else label)
     return output_mapping[input]
 
+#%%
+# Transform data into Tensor that has a range from 0 to 1
+train_set = FashionDataset(train_csv, transform=transforms.Compose([transforms.ToTensor()]))
+test_set = FashionDataset(test_csv, transform=transforms.Compose([transforms.ToTensor()]))
+
+train_loader = DataLoader(train_set, batch_size=100)
+test_loader = DataLoader(train_set, batch_size=100)
 #%%
 class FashionCNN(nn.Module):
     
