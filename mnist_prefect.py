@@ -10,3 +10,18 @@ def download_data():
                                                transforms.Compose([transforms.ToTensor()]))  
     return train_set, test_set
 
+@task
+def load_data(train_set, test_set):
+    train_loader = torch.utils.data.DataLoader(train_set, 
+                                           batch_size=100)
+    test_loader = torch.utils.data.DataLoader(test_set,
+                                          batch_size=100)
+    return train_loader, test_loader
+
+@task
+def vis_test(train_set):
+    image, label = next(iter(train_set))
+    plt.imshow(image.squeeze(), cmap="gray")
+    print(label)
+
+
