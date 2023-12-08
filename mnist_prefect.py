@@ -40,3 +40,5 @@ def first_flow():
 
 if __name__ == "__main__":
    first_flow()
+
+#TASKS - Build the CNN to the task and visualize flow
